@@ -72,7 +72,7 @@ namespace Service.Services
             }
         }
 
-        public async Task<ResultModel> GetCycleByIdAsync(int cycleId, int userId)
+        public async Task<ResultModel> GetCycleByIdAsync(int cycleId)
         {
             try
             {
@@ -80,11 +80,6 @@ namespace Service.Services
                 if (cycle == null)
                 {
                     return ResultModel.NotFound("Cycle not found");
-                }
-
-                if (cycle.UserId != userId)
-                {
-                    return ResultModel.Forbidden("You can only access your own cycles");
                 }
 
                 var cycleDto = MapToMenstrualCycleDto(cycle);
@@ -255,6 +250,65 @@ namespace Service.Services
             catch (Exception ex)
             {
                 return ResultModel.InternalServerError($"Failed to get cycles by date range: {ex.Message}");
+            }
+        }
+
+        public async Task<ResultModel> GetUsersNeedingNotificationsAsync()
+        {
+            try
+            {
+                // Get users who want cycle notifications
+                var users = await _userRepo.GetUsersWithCycleNotificationsAsync();
+                var usersNeedingNotifications = new List<object>();
+
+                foreach (var user in users)
+                {
+                    // Get user's latest active cycle
+                    var latestCycle = await _menstrualCycleRepo.GetLatestCycleByUserAsync(user.UserId);
+                    if (latestCycle != null && !latestCycle.EndDate.HasValue)
+                    {
+                        var cycleDto = MapToMenstrualCycleDto(latestCycle);
+                        
+                        // Check if user needs notifications (approaching ovulation, fertile window, etc.)
+                        var today = DateTime.Today;
+                        var startDate = latestCycle.StartDate.ToDateTime(TimeOnly.MinValue);
+                        
+                        // Predict ovulation (typically 14 days before next period)
+                        var predictedOvulation = startDate.AddDays(latestCycle.ExpectedCycleLength - 14);
+                        var daysToOvulation = (predictedOvulation - today).Days;
+                        
+                        // Fertile window (5 days before ovulation to 1 day after)
+                        var fertileWindowStart = predictedOvulation.AddDays(-5);
+                        var fertileWindowEnd = predictedOvulation.AddDays(1);
+                        
+                        var isInFertileWindow = today >= fertileWindowStart && today <= fertileWindowEnd;
+                        var isOvulationDay = today.Date == predictedOvulation.Date;
+                        
+                        if (isOvulationDay || isInFertileWindow || daysToOvulation <= 2)
+                        {
+                            usersNeedingNotifications.Add(new
+                            {
+                                User = new
+                                {
+                                    user.UserId,
+                                    user.FirstName,
+                                    user.LastName,
+                                    user.Email
+                                },
+                                Cycle = cycleDto,
+                                NotificationType = isOvulationDay ? "Ovulation" : 
+                                                 isInFertileWindow ? "FertileWindow" : "UpcomingOvulation",
+                                DaysToOvulation = daysToOvulation
+                            });
+                        }
+                    }
+                }
+
+                return ResultModel.Success(usersNeedingNotifications);
+            }
+            catch (Exception ex)
+            {
+                return ResultModel.InternalServerError($"Failed to get users needing notifications: {ex.Message}");
             }
         }
 

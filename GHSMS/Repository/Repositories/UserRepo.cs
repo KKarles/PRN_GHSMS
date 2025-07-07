@@ -52,8 +52,9 @@ namespace Repository.Repositories
 
         public async Task<IEnumerable<User>> GetUsersWithPillRemindersAsync(TimeOnly currentTime)
         {
+            // Get all users with pill reminders enabled - we'll filter by time in the service layer
             return await _dbSet
-                .Where(u => u.WantsCycleNotifications && u.PillReminderTime == currentTime)
+                .Where(u => u.WantsCycleNotifications && u.PillReminderTime != null)
                 .ToListAsync();
         }
     }

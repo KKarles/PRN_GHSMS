@@ -6,6 +6,7 @@ using Repository;
 using Repository.Models;
 using Service;
 using GHSMS.Services;
+using GHSMS.BackgroundServices;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,12 @@ builder.Services.AddServiceLayer();
 
 // Add JWT Service
 builder.Services.AddScoped<IJwtService, JwtService>();
+
+// Add Email Service
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+// Add Background Services
+builder.Services.AddHostedService<HealthNotificationBackgroundService>();
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");

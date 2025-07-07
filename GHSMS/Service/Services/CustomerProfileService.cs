@@ -169,11 +169,16 @@ namespace Service.Services
                     .FirstOrDefault()?.AppointmentTime;
 
                 // Get recent bookings (last 5)
-                var recentBookings = bookingsList
+                var recentBookings = new List<TestBookingDto>();
+                var recentBookingsList = bookingsList
                     .OrderByDescending(b => b.BookedAt)
                     .Take(5)
-                    .Select(MapToTestBookingDto)
                     .ToList();
+
+                foreach (var booking in recentBookingsList)
+                {
+                    recentBookings.Add(await MapToTestBookingDto(booking));
+                }
 
                 var dashboard = new CustomerDashboardSummaryDto
                 {
@@ -236,7 +241,13 @@ namespace Service.Services
             try
             {
                 var bookings = await _testBookingRepo.GetBookingsByCustomerAsync(customerId);
-                var bookingDtos = bookings.Select(MapToTestBookingDto).ToList();
+                var bookingDtos = new List<TestBookingDto>();
+                
+                foreach (var booking in bookings)
+                {
+                    bookingDtos.Add(await MapToTestBookingDto(booking));
+                }
+                
                 return ResultModel.Success(bookingDtos);
             }
             catch (Exception ex)
@@ -278,10 +289,14 @@ namespace Service.Services
             };
         }
 
-        private TestBookingDto MapToTestBookingDto(Repository.Models.TestBooking booking)
+        private async Task<TestBookingDto> MapToTestBookingDto(Repository.Models.TestBooking booking)
         {
-            var book = booking;
-            var name = book.Customer.FirstName;
+            // Ensure we have the customer and service data
+            if (booking.Customer == null || booking.Service == null)
+            {
+                booking = await _testBookingRepo.GetBookingWithDetailsAsync(booking.BookingId) ?? booking;
+            }
+
             return new TestBookingDto
             {
                 BookingId = booking.BookingId,
