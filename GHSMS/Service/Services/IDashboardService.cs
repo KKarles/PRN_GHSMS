@@ -5,9 +5,14 @@ namespace Service.Services
 {
     public interface IDashboardService
     {
-        Task<ResultModel> GetAdminDashboardStatsAsync();
-        Task<ResultModel> GetManagerDashboardStatsAsync();
-        Task<ResultModel> GetCustomerDashboardAsync(int customerId);
-        Task<ResultModel> GetStaffDashboardStatsAsync();
+        Task<ResultModel> GetDashboardStatsAsync();
+        Task<ResultModel> GetRevenueStatsAsync();
+        Task<ResultModel> GetUserStatsAsync();
+        Task<ResultModel> GetBookingStatsAsync();
+        Task<ResultModel> GetServiceStatsAsync();
+        Task<ResultModel> GetMonthlyRevenueAsync(int year);
+        Task<ResultModel> GetRevenueByServiceAsync();
+        Task<ResultModel> GetRegistrationTrendsAsync(int days = 30);
+        Task<ResultModel> GetPopularServicesAsync(int limit = 10);
     }
 }

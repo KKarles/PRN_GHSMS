@@ -273,7 +273,7 @@ namespace Service.Services
         private async Task<TestBookingDto> MapToTestBookingDto(TestBooking booking)
         {
             // Ensure we have the service and customer data
-            if (booking.Service == null)
+            if (booking.Service == null || booking.Customer == null)
             {
                 booking = await _testBookingRepo.GetBookingWithDetailsAsync(booking.BookingId) ?? booking;
             }

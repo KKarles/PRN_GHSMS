@@ -103,7 +103,10 @@ namespace GHSMS.Controllers
                 var booking = result.Data as TestBookingDto;
                 if (booking?.CustomerId != customerId)
                 {
-                    return Forbid("You can only view your own bookings");
+                    return StatusCode(403, new { 
+                        success = false, 
+                        message = "You can only view your own bookings" 
+                    });
                 }
             }
 
