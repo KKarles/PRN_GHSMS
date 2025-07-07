@@ -12,7 +12,7 @@ namespace Repository
         public static IServiceCollection AddRepositoryServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Add DbContext
-            services.AddDbContext<GenderHealthcareDbContext>(options =>
+            services.AddDbContext<GenderHealthcareDBContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             // Register Generic Repository

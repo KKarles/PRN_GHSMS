@@ -6,7 +6,7 @@ namespace Repository.Repositories
 {
     public class RoleRepo : GenericRepository<Role>, IRoleRepo
     {
-        public RoleRepo(GenderHealthcareDbContext context) : base(context)
+        public RoleRepo(GenderHealthcareDBContext context) : base(context)
         {
         }
 

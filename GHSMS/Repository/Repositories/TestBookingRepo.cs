@@ -6,7 +6,7 @@ namespace Repository.Repositories
 {
     public class TestBookingRepo : GenericRepository<TestBooking>, ITestBookingRepo
     {
-        public TestBookingRepo(GenderHealthcareDbContext context) : base(context)
+        public TestBookingRepo(GenderHealthcareDBContext context) : base(context)
         {
         }
 
@@ -42,7 +42,7 @@ namespace Repository.Repositories
                 .Include(tb => tb.Service)
                     .ThenInclude(s => s.Analytes)
                 .Include(tb => tb.Customer)
-                .Include(tb => tb.TestResults)
+                .Include(tb => tb.TestResult)
                 .FirstOrDefaultAsync(tb => tb.BookingId == bookingId);
         }
 

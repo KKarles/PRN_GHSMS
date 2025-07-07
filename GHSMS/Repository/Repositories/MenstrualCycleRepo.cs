@@ -6,7 +6,7 @@ namespace Repository.Repositories
 {
     public class MenstrualCycleRepo : GenericRepository<MenstrualCycle>, IMenstrualCycleRepo
     {
-        public MenstrualCycleRepo(GenderHealthcareDbContext context) : base(context)
+        public MenstrualCycleRepo(GenderHealthcareDBContext context) : base(context)
         {
         }
 

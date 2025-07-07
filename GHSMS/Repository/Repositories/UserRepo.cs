@@ -6,7 +6,7 @@ namespace Repository.Repositories
 {
     public class UserRepo : GenericRepository<User>, IUserRepo
     {
-        public UserRepo(GenderHealthcareDbContext context) : base(context)
+        public UserRepo(GenderHealthcareDBContext context) : base(context)
         {
         }
 

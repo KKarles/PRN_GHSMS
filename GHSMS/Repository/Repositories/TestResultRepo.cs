@@ -6,7 +6,7 @@ namespace Repository.Repositories
 {
     public class TestResultRepo : GenericRepository<TestResult>, ITestResultRepo
     {
-        public TestResultRepo(GenderHealthcareDbContext context) : base(context)
+        public TestResultRepo(GenderHealthcareDBContext context) : base(context)
         {
         }
 

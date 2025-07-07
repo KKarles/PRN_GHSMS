@@ -1,3 +1,4 @@
+using Repository.Base;
 using Repository.Models;
 using Repository.Repositories;
 using Service.DTOs;

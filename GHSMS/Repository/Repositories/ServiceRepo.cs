@@ -6,7 +6,7 @@ namespace Repository.Repositories
 {
     public class ServiceRepo : GenericRepository<Service>, IServiceRepo
     {
-        public ServiceRepo(GenderHealthcareDbContext context) : base(context)
+        public ServiceRepo(GenderHealthcareDBContext context) : base(context)
         {
         }
 

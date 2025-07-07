@@ -6,10 +6,10 @@ namespace Repository.Base
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly GenderHealthcareDbContext _context;
+        protected readonly GenderHealthcareDBContext _context;
         protected readonly DbSet<T> _dbSet;
 
-        public GenericRepository(GenderHealthcareDbContext context)
+        public GenericRepository(GenderHealthcareDBContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();

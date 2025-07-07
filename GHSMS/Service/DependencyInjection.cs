@@ -13,7 +13,7 @@ namespace Service
             services.AddScoped<ITestBookingService, TestBookingService>();
             services.AddScoped<ITestResultService, TestResultService>();
             services.AddScoped<IMenstrualCycleService, MenstrualCycleService>();
-            services.AddScoped<IDashboardService, DashboardService>();
+            //services.AddScoped<IDashboardService, DashboardService>();
 
             return services;
         }
