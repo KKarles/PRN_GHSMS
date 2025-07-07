@@ -1,0 +1,78 @@
+## Ignore Visual Studio temporary files, build results, and
+## user-specific files.
+
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files
+Generated_Code/
+
+# Backup & cache
+*.bak
+*.tmp
+*.cache
+*.vspscc
+*.vssscc
+
+# Visual Studio
+.vscode/
+.vs/
+*.code-workspace
+
+# Rider
+.idea/
+
+# ASP.NET
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.json
+
+# Environment files
+.env
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+# Uncomment if using package references and want to ignore downloaded packages
+# /packages
+
+# Logs
+*.log
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# DotCover
+*.dotCover
+
+# Others
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+scope.txt
+.cursor/
+.vs/
