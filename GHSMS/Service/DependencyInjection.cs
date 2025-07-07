@@ -14,6 +14,8 @@ namespace Service
             services.AddScoped<ITestResultService, TestResultService>();
             services.AddScoped<IMenstrualCycleService, MenstrualCycleService>();
             services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<ICustomerProfileService, CustomerProfileService>();
+            services.AddScoped<IStaffQualificationService, StaffQualificationService>();
 
             return services;
         }
