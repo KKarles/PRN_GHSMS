@@ -16,6 +16,8 @@ namespace Service
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<ICustomerProfileService, CustomerProfileService>();
             services.AddScoped<IStaffQualificationService, StaffQualificationService>();
+            services.AddScoped<IStaffDashboardService, StaffDashboardService>();
+            services.AddScoped<IUserLookupService, UserLookupService>();
 
             return services;
         }
