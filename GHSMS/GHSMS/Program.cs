@@ -51,6 +51,20 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+var MyReactAppCorsPolicy = "MyReactAppCorsPolicy";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyReactAppCorsPolicy,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:5173") // Your React app's address
+                                .AllowAnyHeader()
+                                .AllowAnyMethod()
+                          .AllowCredentials();
+                      });
+});
+
 // Add services to the container.
 builder.Services.AddControllers();
 
@@ -96,7 +110,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(MyReactAppCorsPolicy);
 // Add Authentication and Authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();
