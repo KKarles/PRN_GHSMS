@@ -347,5 +347,23 @@ namespace Service.Services
             var passwordHash = HashPassword(password);
             return passwordHash == hash;
         }
+
+        public async Task<ResultModel> GetUserProfileByIdAsync(int userId)
+        {
+            try
+            {
+                var user = await _userRepo.GetUserProfileAsync(userId);
+                if (user == null)
+                    return ResultModel.NotFound("User not found");
+
+                var userProfile = MapToUserProfileDto(user);
+                return ResultModel.Success(userProfile);
+            }
+            catch (Exception ex)
+            {
+                return ResultModel.InternalServerError($"Failed to get user profile: {ex.Message}");
+            }
+        }
+
     }
 }
