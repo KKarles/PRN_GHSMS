@@ -26,6 +26,7 @@ namespace Repository.Repositories
         {
             return await _dbSet
                 .Include(u => u.Roles)
+                .Include(u => u.ConsultantProfile)
                 .Where(u => u.Roles.Any(r => r.RoleName == roleName))
                 .ToListAsync();
         }
