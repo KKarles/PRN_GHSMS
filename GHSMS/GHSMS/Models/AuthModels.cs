@@ -57,4 +57,13 @@ namespace GHSMS.Models
         public string Email { get; set; } = string.Empty;
         public List<string> Roles { get; set; } = new List<string>();
     }
+
+    public class UpdateProfileRequest
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? PhoneNumber { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public string? Sex { get; set; }
+    }
 }

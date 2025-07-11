@@ -234,6 +234,39 @@ namespace GHSMS.Controllers
             });
         }
 
+        [HttpPut("profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized(new { message = "Invalid token" });
+            }
+
+            var updateDto = new UserUpdateDto
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                PhoneNumber = request.PhoneNumber,
+                DateOfBirth = request.DateOfBirth,
+                Sex = request.Sex
+            };
+
+            var result = await _userService.UpdateUserProfileAsync(userId, updateDto);
+
+            if (!result.IsSuccess)
+            {
+                return StatusCode(result.Code, new { message = result.Message });
+            }
+
+            return Ok(new { 
+                success = true,
+                message = "Profile updated successfully",
+                data = result.Data 
+            });
+        }
+
         [HttpPost("logout")]
         [Authorize]
         public IActionResult Logout()
