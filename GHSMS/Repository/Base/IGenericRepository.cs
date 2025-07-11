@@ -25,6 +25,8 @@ namespace Repository.Base
         Task<bool> RemoveAsync(T entity);
         Task<bool> RemoveAsync(object id);
         Task SaveAsync();
+        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
+
 
         // Preparation methods (for transaction management)
         T PrepareCreate(T entity);
