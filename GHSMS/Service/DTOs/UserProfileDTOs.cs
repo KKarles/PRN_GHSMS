@@ -93,4 +93,49 @@ namespace Service.DTOs
         public List<TestBookingDto> RecentBookings { get; set; } = new List<TestBookingDto>();
         public NotificationSettingsDto NotificationSettings { get; set; } = new NotificationSettingsDto();
     }
+
+    public class CreateQuestionDto
+    {
+        [Required]
+        [MaxLength(200)]
+        public string Title { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(2000)]
+        public string QuestionText { get; set; } = string.Empty;
+
+        public bool IsAnonymous { get; set; }
+    }
+
+    public class QuestionDto
+    {
+        public int QuestionId { get; set; }
+        public int CustomerId { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string QuestionText { get; set; } = string.Empty;
+        public bool IsAnonymous { get; set; }
+        public string CustomerName { get; set; } = string.Empty; // "Anonymous" if IsAnonymous
+        public DateTime CreatedAt { get; set; }
+        public List<AnswerDto> Answers { get; set; } = new();
+    }
+
+    public class CreateAnswerDto
+    {
+        [Required]
+        public int QuestionId { get; set; }
+
+        [Required]
+        [MaxLength(2000)]
+        public string AnswerText { get; set; } = string.Empty;
+    }
+
+    public class AnswerDto
+    {
+        public int AnswerId { get; set; }
+        public int QuestionId { get; set; }
+        public int ConsultantId { get; set; }
+        public string ConsultantName { get; set; } = string.Empty;
+        public string AnswerText { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+    }
 }
