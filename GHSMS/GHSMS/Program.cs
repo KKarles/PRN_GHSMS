@@ -8,6 +8,9 @@ using Service;
 using GHSMS.Services;
 using GHSMS.BackgroundServices;
 using System.Text;
+using Repository.Repositories.Repository.Repositories;
+using Repository.Repositories;
+using Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,19 +54,27 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-var MyReactAppCorsPolicy = "MyReactAppCorsPolicy";
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyReactAppCorsPolicy,
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:5173") // Your React app's address
+                          policy.WithOrigins(
+                           "http://localhost:5174",  // Vite dev server
+                           "http://localhost:3000",  // React dev server
+                           "http://localhost:5173",  // Alternative Vite port
+                           "https://localhost:5174", // HTTPS version
+                           "https://localhost:3000"  // HTTPS version
+           
+                              ) // Your React app's address
                                 .AllowAnyHeader()
                                 .AllowAnyMethod()
                           .AllowCredentials();
                       });
 });
+
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<IFeedbackRepo, FeedbackRepo>();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -110,11 +121,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors(MyReactAppCorsPolicy);
+
 // Add Authentication and Authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowAll");
 
 app.Run();

@@ -27,7 +27,9 @@ namespace Repository
             services.AddScoped<IMenstrualCycleRepo, MenstrualCycleRepo>();
             services.AddScoped<IConsultantProfileRepo, ConsultantProfileRepo>();
             services.AddScoped<IBlogPostRepo, BlogPostRepo>();
-
+            services.AddScoped<IAppointmentRepo, AppointmentRepo>();
+            services.AddScoped<IScheduleRepo, ScheduleRepo>();
+          
             // Register additional repositories for missing entities
             services.AddScoped<IGenericRepository<Repository.Models.Analyte>, GenericRepository<Repository.Models.Analyte>>();
             services.AddScoped<IGenericRepository<Repository.Models.TestResultDetail>, GenericRepository<Repository.Models.TestResultDetail>>();
