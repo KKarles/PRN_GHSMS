@@ -26,9 +26,10 @@ namespace Repository
             services.AddScoped<ITestResultRepo, TestResultRepo>();
             services.AddScoped<IMenstrualCycleRepo, MenstrualCycleRepo>();
             services.AddScoped<IConsultantProfileRepo, ConsultantProfileRepo>();
+            services.AddScoped<IBlogPostRepo, BlogPostRepo>();
             services.AddScoped<IAppointmentRepo, AppointmentRepo>();
             services.AddScoped<IScheduleRepo, ScheduleRepo>();
-
+          
             // Register additional repositories for missing entities
             services.AddScoped<IGenericRepository<Repository.Models.Analyte>, GenericRepository<Repository.Models.Analyte>>();
             services.AddScoped<IGenericRepository<Repository.Models.TestResultDetail>, GenericRepository<Repository.Models.TestResultDetail>>();
@@ -36,6 +37,7 @@ namespace Repository
             services.AddScoped<IGenericRepository<Repository.Models.Question>, GenericRepository<Repository.Models.Question>>();
             services.AddScoped<IGenericRepository<Repository.Models.Answer>, GenericRepository<Repository.Models.Answer>>();
             services.AddScoped<IGenericRepository<Repository.Models.Feedback>, GenericRepository<Repository.Models.Feedback>>();
+            services.AddScoped<IGenericRepository<Repository.Models.BlogPost>, GenericRepository <Repository.Models.BlogPost>>();
 
             return services;
         }
