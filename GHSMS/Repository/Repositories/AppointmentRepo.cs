@@ -32,10 +32,19 @@ namespace Repository.Repositories
 
         public async Task<IEnumerable<Appointment>> GetAppointmentsByStatusAsync(string status)
         {
-            return await _dbSet
+            var query = _dbSet
                 .Include(a => a.Customer)
                 .Include(a => a.Consultant)
-                .Include(a => a.Schedule)
+                .Include(a => a.Schedule);
+
+            // If status is null or empty, return all appointments
+            if (status == "all")
+            {
+                return await query.ToListAsync();
+            }
+
+            // Otherwise filter by the specific status
+            return await query
                 .Where(a => a.AppointmentStatus == status)
                 .ToListAsync();
         }

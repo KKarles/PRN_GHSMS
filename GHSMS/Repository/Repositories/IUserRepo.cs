@@ -12,5 +12,6 @@ namespace Repository.Repositories
         Task<User?> GetUserWithRolesAsync(int userId);
         Task<IEnumerable<User>> GetUsersWithCycleNotificationsAsync();
         Task<IEnumerable<User>> GetUsersWithPillRemindersAsync(TimeOnly currentTime);
+        Task<bool> DeleteUserAsync(int userId);
     }
 }

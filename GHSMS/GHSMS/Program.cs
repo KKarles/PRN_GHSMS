@@ -51,15 +51,25 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Add CORS
+var MyReactAppCorsPolicy = "MyReactAppCorsPolicy";
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
+    options.AddPolicy(name: MyReactAppCorsPolicy,
+                      policy =>
+                      {
+                          policy.WithOrigins(
+                           "http://localhost:5174",  // Vite dev server
+                           "http://localhost:3000",  // React dev server
+                           "http://localhost:5173",  // Alternative Vite port
+                           "https://localhost:5174", // HTTPS version
+                           "https://localhost:3000"  // HTTPS version
+           
+                              ) // Your React app's address
+                                .AllowAnyHeader()
+                                .AllowAnyMethod()
+                          .AllowCredentials();
+                      });
 });
 
 // Add services to the container.
@@ -107,10 +117,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// Add CORS middleware
-app.UseCors("AllowAll");
-
+app.UseCors(MyReactAppCorsPolicy);
 // Add Authentication and Authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();
