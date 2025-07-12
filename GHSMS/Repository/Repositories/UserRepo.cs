@@ -59,6 +59,28 @@ namespace Repository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<User?> GetUserProfileAsync(int userId)
+        {
+            return await _dbSet
+                .Where(u => u.UserId == userId)
+                .Select(u => new User
+                {
+                    UserId = u.UserId,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    PhoneNumber = u.PhoneNumber,
+                    DateOfBirth = u.DateOfBirth,
+                    Sex = u.Sex,
+                    WantsCycleNotifications = u.WantsCycleNotifications,
+                    PillReminderTime = u.PillReminderTime,
+                    CreatedAt = u.CreatedAt,
+                    UpdatedAt = u.UpdatedAt,
+                    Roles = u.Roles
+                })
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<bool> DeleteUserAsync(int userId)
         {
             try

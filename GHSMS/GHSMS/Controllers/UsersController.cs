@@ -71,6 +71,27 @@ namespace GHSMS.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            try
+            {
+                var result = await _userService.GetUserProfileAsync(id);
+                return StatusCode(result.Code, new
+                {
+                    success = result.IsSuccess,
+                    message = result.Message,
+                    data = result.Data
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting user by ID {id}");
+                return StatusCode(500, new { message = "Failed to get user info" });
+            }
+        }
+
         /// <summary>
         /// Get all staff users
         /// </summary>
