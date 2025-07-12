@@ -58,7 +58,14 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyReactAppCorsPolicy,
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:5173") // Your React app's address
+                          policy.WithOrigins(
+                           "http://localhost:5174",  // Vite dev server
+                           "http://localhost:3000",  // React dev server
+                           "http://localhost:5173",  // Alternative Vite port
+                           "https://localhost:5174", // HTTPS version
+                           "https://localhost:3000"  // HTTPS version
+           
+                              ) // Your React app's address
                                 .AllowAnyHeader()
                                 .AllowAnyMethod()
                           .AllowCredentials();

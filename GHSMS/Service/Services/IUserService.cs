@@ -17,5 +17,9 @@ namespace Service.Services
         Task<ResultModel> UpdateNotificationPreferencesAsync(int userId, bool wantsCycleNotifications, TimeSpan? pillReminderTime);
         Task<ResultModel> GetUsersWithCycleNotificationsAsync();
         Task<ResultModel> GetUsersWithPillRemindersAsync(TimeSpan currentTime);
+        Task<ResultModel> GetEmployeesAsync();
+        Task<ResultModel> GetStaffAsync();
+        Task<ResultModel> GetConsultantsAsync();
+        Task<ResultModel> DeleteUserAsync(int userId);
     }
 }
