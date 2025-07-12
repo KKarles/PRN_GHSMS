@@ -26,6 +26,7 @@ namespace Repository.Repositories
         {
             return await _dbSet
                 .Include(u => u.Roles)
+                .Include(u => u.ConsultantProfile)
                 .Where(u => u.Roles.Any(r => r.RoleName == roleName))
                 .ToListAsync();
         }
@@ -80,5 +81,42 @@ namespace Repository.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<bool> DeleteUserAsync(int userId)
+        {
+            try
+            {
+                // Get user with all related data for cascade delete
+                var user = await _dbSet
+                    .Include(u => u.Roles)
+                    .Include(u => u.Answers)
+                    .Include(u => u.AppointmentConsultants)
+                    .Include(u => u.AppointmentCustomers)
+                    .Include(u => u.BlogPosts)
+                    .Include(u => u.ConsultantProfile)
+                    .Include(u => u.Feedbacks)
+                    .Include(u => u.MenstrualCycles)
+                    .Include(u => u.Questions)
+                    .Include(u => u.Schedules)
+                    .Include(u => u.TestBookings)
+                    .Include(u => u.TestResults)
+                    .FirstOrDefaultAsync(u => u.UserId == userId);
+
+                if (user == null)
+                {
+                    return false;
+                }
+
+                // Remove the user - EF Core will handle cascade deletes
+                _dbSet.Remove(user);
+                var result = await _context.SaveChangesAsync();
+                
+                return result > 0;
+            }
+            catch (Exception)
+            {
+                // Log the exception if needed
+                return false;
+            }
+        }
     }
 }

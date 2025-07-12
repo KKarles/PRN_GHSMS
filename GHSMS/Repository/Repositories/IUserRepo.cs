@@ -14,5 +14,6 @@ namespace Repository.Repositories
         Task<IEnumerable<User>> GetUsersWithPillRemindersAsync(TimeOnly currentTime);
         Task<User?> GetUserProfileAsync(int userId);
 
+        Task<bool> DeleteUserAsync(int userId);
     }
 }

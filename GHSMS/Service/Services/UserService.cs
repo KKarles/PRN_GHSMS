@@ -318,6 +318,94 @@ namespace Service.Services
             }
         }
 
+        public async Task<ResultModel> GetEmployeesAsync()
+        {
+            try
+            {
+                var staffUsers = await _userRepo.GetUsersByRoleAsync("Staff");
+                var consultantUsers = await _userRepo.GetUsersByRoleAsync("Consultant");
+                
+                var employees = staffUsers.Concat(consultantUsers).Distinct().ToList();
+                var employeeProfiles = employees.Select(MapToUserProfileDto).ToList();
+                
+                return ResultModel.Success(employeeProfiles, "Employees retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                return ResultModel.InternalServerError($"Failed to get employees: {ex.Message}");
+            }
+        }
+
+        public async Task<ResultModel> GetStaffAsync()
+        {
+            try
+            {
+                var users = await _userRepo.GetUsersByRoleAsync("Staff");
+                var userProfiles = users.Select(MapToUserProfileDto).ToList();
+                return ResultModel.Success(userProfiles, "Staff users retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                return ResultModel.InternalServerError($"Failed to get staff users: {ex.Message}");
+            }
+        }
+
+        public async Task<ResultModel> GetConsultantsAsync()
+        {
+            try
+            {
+                var users = await _userRepo.GetUsersByRoleAsync("Consultant");
+                var userProfiles = users.Select(MapToUserProfileDto).ToList();
+                return ResultModel.Success(userProfiles, "Consultant users retrieved successfully");
+            }
+            catch (Exception ex)
+            {
+                return ResultModel.InternalServerError($"Failed to get consultant users: {ex.Message}");
+            }
+        }
+
+        public async Task<ResultModel> DeleteUserAsync(int userId)
+        {
+            try
+            {
+                var user = await _userRepo.GetUserWithRolesAsync(userId);
+                if (user == null)
+                {
+                    return ResultModel.NotFound("User not found");
+                }
+
+                // Check if user is admin - prevent deleting admin users
+                if (user.Roles.Any(r => r.RoleName == "Admin"))
+                {
+                    return ResultModel.BadRequest("Cannot delete admin users");
+                }
+
+                // Get user with all related data to check dependencies
+                var userWithDetails = await _userRepo.GetByIdAsync(userId);
+                if (userWithDetails == null)
+                {
+                    return ResultModel.NotFound("User not found");
+                }
+
+                // Note: Due to EF Core cascade delete configuration, related data should be handled automatically
+                // However, we should explicitly handle critical relationships to ensure data integrity
+
+                // Delete the user and all related data
+                var deleteResult = await _userRepo.DeleteUserAsync(userId);
+                
+                if (!deleteResult)
+                {
+                    return ResultModel.InternalServerError("Failed to delete user from database");
+                }
+
+                return ResultModel.Success(null, $"User '{user.FirstName} {user.LastName}' and all related data deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return ResultModel.InternalServerError($"Failed to delete user: {ex.Message}");
+            }
+        }
+
         private UserProfileDto MapToUserProfileDto(User user)
         {
             return new UserProfileDto
