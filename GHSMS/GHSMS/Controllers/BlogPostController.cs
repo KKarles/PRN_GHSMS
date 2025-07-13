@@ -293,7 +293,7 @@ namespace GHSMS.Controllers
         /// Get my blog posts (Staff, Manager, Admin only)
         /// </summary>
         [HttpGet("my-posts")]
-        [Authorize(Roles = "Staff,Manager,Admin")]
+        [Authorize(Roles = "Customer,Staff,Manager,Admin")]
         public async Task<IActionResult> GetMyBlogPosts([FromQuery] BlogPostSearchDto searchDto)
         {
             try
