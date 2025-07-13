@@ -20,7 +20,10 @@ namespace Service
             services.AddScoped<IUserLookupService, UserLookupService>();
             services.AddScoped<IQuestionService, QuestionService>();
             services.AddScoped<IBlogPostService, BlogPostService>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IServiceCatalogService, ServiceCatalogService>();
+
             return services;
         }
     }

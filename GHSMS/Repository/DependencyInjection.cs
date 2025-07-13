@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Repository.Base;
 using Repository.Models;
 using Repository.Repositories;
+using Repository.Repositories.Repository.Repositories;
 
 namespace Repository
 {
@@ -28,8 +29,9 @@ namespace Repository
             services.AddScoped<IConsultantProfileRepo, ConsultantProfileRepo>();
             services.AddScoped<IBlogPostRepo, BlogPostRepo>();
             services.AddScoped<IAppointmentRepo, AppointmentRepo>();
+            services.AddScoped<IFeedbackRepo, FeedbackRepo>();
             services.AddScoped<IScheduleRepo, ScheduleRepo>();
-          
+
             // Register additional repositories for missing entities
             services.AddScoped<IGenericRepository<Repository.Models.Analyte>, GenericRepository<Repository.Models.Analyte>>();
             services.AddScoped<IGenericRepository<Repository.Models.TestResultDetail>, GenericRepository<Repository.Models.TestResultDetail>>();
@@ -38,6 +40,7 @@ namespace Repository
             services.AddScoped<IGenericRepository<Repository.Models.Answer>, GenericRepository<Repository.Models.Answer>>();
             services.AddScoped<IGenericRepository<Repository.Models.Feedback>, GenericRepository<Repository.Models.Feedback>>();
             services.AddScoped<IGenericRepository<Repository.Models.BlogPost>, GenericRepository <Repository.Models.BlogPost>>();
+            services.AddScoped<IGenericRepository<Repository.Models.Feedback>, GenericRepository<Repository.Models.Feedback>>();
 
             return services;
         }
