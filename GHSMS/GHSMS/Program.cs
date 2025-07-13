@@ -8,9 +8,6 @@ using Service;
 using GHSMS.Services;
 using GHSMS.BackgroundServices;
 using System.Text;
-using Repository.Repositories.Repository.Repositories;
-using Repository.Repositories;
-using Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +51,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+var MyReactAppCorsPolicy = "MyReactAppCorsPolicy";
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyReactAppCorsPolicy,
@@ -65,16 +64,13 @@ builder.Services.AddCors(options =>
                            "http://localhost:5173",  // Alternative Vite port
                            "https://localhost:5174", // HTTPS version
                            "https://localhost:3000"  // HTTPS version
-           
+
                               ) // Your React app's address
                                 .AllowAnyHeader()
                                 .AllowAnyMethod()
                           .AllowCredentials();
                       });
 });
-
-builder.Services.AddScoped<IFeedbackService, FeedbackService>();
-builder.Services.AddScoped<IFeedbackRepo, FeedbackRepo>();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -84,7 +80,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "GHSMS API", Version = "v1" });
-    
+
     // Add JWT Authentication to Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -94,7 +90,7 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-    
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -121,13 +117,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(MyReactAppCorsPolicy);
 // Add Authentication and Authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseCors("AllowAll");
 
 app.Run();
