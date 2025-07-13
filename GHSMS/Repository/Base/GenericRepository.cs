@@ -147,6 +147,11 @@ namespace Repository.Base
             await _context.SaveChangesAsync();
         }
 
+        public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
+
         // Preparation methods (for transaction management)
         public virtual T PrepareCreate(T entity)
         {

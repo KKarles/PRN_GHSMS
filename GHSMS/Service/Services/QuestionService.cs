@@ -70,24 +70,28 @@ namespace Service.Services
 
         public async Task<ResultModel> GetQuestionByIdAsync(int questionId)
         {
-            var q = await _questionRepo.GetByIdAsync(questionId, x => x.Customer, x => x.Answers);
-            if (q == null)
+            // Workaround: fetch question and answers separately to avoid Reference/Collection error
+            var question = await _questionRepo.GetByIdAsync(questionId, x => x.Customer);
+            if (question == null)
                 return ResultModel.NotFound("Question not found");
+            // Fetch answers separately, including Consultant
+            var answers = await _answerRepo.GetAllAsync(a => a.Consultant);
+            var filteredAnswers = answers.Where(a => a.QuestionId == questionId);
             var dto = new QuestionDto
             {
-                QuestionId = q.QuestionId,
-                CustomerId = q.CustomerId,
-                Title = q.Title,
-                QuestionText = q.QuestionText,
-                IsAnonymous = q.IsAnonymous ?? false,
-                CustomerName = (q.IsAnonymous ?? false) ? "Anonymous" : $"{q.Customer?.FirstName} {q.Customer?.LastName}",
+                QuestionId = question.QuestionId,
+                CustomerId = question.CustomerId,
+                Title = question.Title,
+                QuestionText = question.QuestionText,
+                IsAnonymous = question.IsAnonymous ?? false,
+                CustomerName = (question.IsAnonymous ?? false) ? "Anonymous" : $"{question.Customer?.FirstName} {question.Customer?.LastName}",
                 CreatedAt = DateTime.Now, // Replace with actual CreatedAt if available
-                Answers = q.Answers.Select(a => new AnswerDto
+                Answers = filteredAnswers.Select(a => new AnswerDto
                 {
                     AnswerId = a.AnswerId,
                     QuestionId = a.QuestionId,
                     ConsultantId = a.ConsultantId,
-                    ConsultantName = $"{a.Consultant?.FirstName} {a.Consultant?.LastName}",
+                    ConsultantName = a.Consultant != null ? $"{a.Consultant.FirstName} {a.Consultant.LastName}" : "Unknown",
                     AnswerText = a.AnswerText,
                     CreatedAt = DateTime.Now // Replace with actual CreatedAt if available
                 }).ToList()
@@ -97,18 +101,18 @@ namespace Service.Services
 
         public async Task<ResultModel> DeleteQuestionAsync(int questionId, int userId, bool isAdminOrManager)
         {
-            var question = await _questionRepo.GetByIdAsync(questionId, q => q.Answers);
+            // Workaround: fetch question and answers separately to avoid Reference/Collection error
+            var question = await _questionRepo.GetByIdAsync(questionId);
             if (question == null)
                 return ResultModel.NotFound("Question not found");
             if (!isAdminOrManager && question.CustomerId != userId)
                 return ResultModel.Forbidden("You can only delete your own questions");
+            // Fetch answers separately
+            var answers = await _answerRepo.WhereAsync(a => a.QuestionId == questionId);
             // Delete all answers first
-            if (question.Answers != null && question.Answers.Any())
+            foreach (var answer in answers)
             {
-                foreach (var answer in question.Answers.ToList())
-                {
-                    await _answerRepo.RemoveAsync(answer);
-                }
+                await _answerRepo.RemoveAsync(answer);
             }
             await _questionRepo.RemoveAsync(question);
             await _questionRepo.SaveAsync();
@@ -148,19 +152,22 @@ namespace Service.Services
 
         public async Task<ResultModel> GetAnswersByQuestionIdAsync(int questionId)
         {
-            var question = await _questionRepo.GetByIdAsync(questionId, q => q.Answers);
+            // Workaround: fetch answers directly to avoid Reference/Collection error, including Consultant
+            var question = await _questionRepo.GetByIdAsync(questionId);
             if (question == null)
                 return ResultModel.NotFound("Question not found");
-            var answers = question.Answers.Select(a => new AnswerDto
+            var answers = await _answerRepo.GetAllAsync(a => a.Consultant);
+            var filteredAnswers = answers.Where(a => a.QuestionId == questionId);
+            var answerDtos = filteredAnswers.Select(a => new AnswerDto
             {
                 AnswerId = a.AnswerId,
                 QuestionId = a.QuestionId,
                 ConsultantId = a.ConsultantId,
-                ConsultantName = $"{a.Consultant?.FirstName} {a.Consultant?.LastName}",
+                ConsultantName = a.Consultant != null ? $"{a.Consultant.FirstName} {a.Consultant.LastName}" : "Unknown",
                 AnswerText = a.AnswerText,
                 CreatedAt = DateTime.Now // Replace with actual CreatedAt if available
             }).ToList();
-            return ResultModel.Success(answers);
+            return ResultModel.Success(answerDtos);
         }
     }
 }
